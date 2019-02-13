@@ -1,6 +1,5 @@
 package com.controller.matrix;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -9,13 +8,13 @@ import java.util.Map;
 @RequestMapping("/matrix")
 public class MatrixController {
 
-    ///http://localhost:8088/mvc01/matrix/matrixvars;foo=bar/simple
+    // http://localhost:8088/mvc01/matrix/matrixvars;foo=bar/simple
     @RequestMapping(value = "{path}/simple", method = RequestMethod.GET)
-    public  String withMatrixVariable(
+    public String withMatrixVariable(
             @PathVariable String path,
             @MatrixVariable(value = "foo", pathVar = "path") String foo
-           ) {
-            return "'foo=" + foo + "' from  '" + path + "'";
+    ) {
+        return "'foo=" + foo + "' from  '" + path + "'";
     }
 
     //matrixvars;foo=bar1/multiple;foo=bar2
@@ -31,7 +30,8 @@ public class MatrixController {
 
     // account;ids=12,45,9
     @RequestMapping(value = "/account;{ids}", method = RequestMethod.GET)
-    public @ResponseBody String withMatrixVariablesAndAssembleToMap(
+    public @ResponseBody
+    String withMatrixVariablesAndAssembleToMap(
             @MatrixVariable(pathVar = "ids") Map<String, String> paths) {
 
         return "Obtained matrix variable (map) : " + paths;  //结果只能拿到12
@@ -39,20 +39,20 @@ public class MatrixController {
 
     //http://localhost:8088/mvc01/matrix/owners/40;q=1;o=2;w=3/pets/20;q=4
     @GetMapping("/owners/{ownerId}/pets/{petId}")
-    public  String withMatrixVariablesMultiple2(
+    public String withMatrixVariablesMultiple2(
             @PathVariable("ownerId") int ownerId,  //-->40
             @PathVariable("petId") int petId,              //-->20
             @MatrixVariable(value = "q", pathVar = "ownerId") int q1,    //-->q=1
             @MatrixVariable(value = "o", pathVar = "ownerId") int o,        //-->o=2
             @MatrixVariable(value = "q", pathVar = "petId") int q2) {       //-->q=4
 
-        return "ownerId : " + ownerId + " , q1 =" + q1 + ",  o ="+ o + " ; petId : " + petId + " , q2 =" + q2;
-                //ownerId : 40 , q1 =1 , o =2 ; petId : 20 , q2 =4
+        return "ownerId : " + ownerId + " , q1 =" + q1 + ",  o =" + o + " ; petId : " + petId + " , q2 =" + q2;
+        //ownerId : 40 , q1 =1 , o =2 ; petId : 20 , q2 =4
     }
 
     //http://localhost:8088/mvc01/matrix/owners/42;q=11;r=12/pets/21;q=22;s=23
     @GetMapping("/find/owners/{ownerId}/pets/{petId}")
-    public  String withMatrixVariablesMultiple3(
+    public String withMatrixVariablesMultiple3(
             @PathVariable("ownerId") int ownerId,
             @PathVariable("petId") int petId,
             @MatrixVariable Map<String, String> matrixVars,
@@ -68,6 +68,5 @@ public class MatrixController {
 
         return msg.toString();
     }
-
 
 }
