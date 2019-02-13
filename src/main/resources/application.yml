@@ -1,12 +1,31 @@
+# ===============================
+# = Server configuration
+# ===============================
 server:
   port: 8088
   servlet:
     context-path: /mvc01
+
+# ===============================
+# = Hibernate datasource
+# ===============================
 spring:
   datasource:
     password: root
     username: root
-    url: jdbc:mysql://localhost:3306/haha?useSSL=false
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/haha?useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true&serv&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-
+  # ===============================
+  # = JPA configurations
+  # ===============================
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: MYSQL
+    properties:
+      hibernate:
+        #use-sql-comments: true
+        #format-sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect

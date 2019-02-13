@@ -1,7 +1,7 @@
 package com.repository;
 
 import com.domain.Product;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -18,27 +18,26 @@ import java.util.List;
 
 @Repository
 @Transactional
+@RequiredArgsConstructor
 public class ProductRepository {
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    RowMapper<Product> rowMapper = new BeanPropertyRowMapper<>(Product.class);
+    private RowMapper<Product> rowMapper = new BeanPropertyRowMapper<>(Product.class);
 
     public int removeProductById(Integer pid) {
         final String sql = "delete from product where pid = ?";
-        return jdbcTemplate.update(sql , pid);
+        return jdbcTemplate.update(sql, pid);
     }
 
 
     @Transactional(readOnly = true)
-    public List<Product> getProductsByIndex(Integer index , Integer size) {
+    public List<Product> getProductsByIndex(Integer index, Integer size) {
 
         String sql = "select pid , pname , price , description , imgs  from product limit ? , ?  ";
 
-        return  jdbcTemplate.query(sql , new Object[]{ index , size} , rowMapper);
+        return jdbcTemplate.query(sql, new Object[]{index, size}, rowMapper);
     }
-
 
 
     @Transactional(readOnly = true)
@@ -56,17 +55,17 @@ public class ProductRepository {
         int rows = jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement ps = connection.prepareStatement(sql , PreparedStatement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps.setString(1, product.getPname());
                 ps.setBigDecimal(2, product.getPrice());
-                ps.setString(3 , product.getDescription());
+                ps.setString(3, product.getDescription());
                 return ps;
             }
-        } , keyHolder);
+        }, keyHolder);
 
-        if(rows>0) {
-                product.setPid(keyHolder.getKey().intValue());
-                return product;
+        if (rows > 0) {
+            product.setPid(keyHolder.getKey().intValue());
+            return product;
         } else {
             return null;
         }
